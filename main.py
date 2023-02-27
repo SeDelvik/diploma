@@ -11,7 +11,9 @@ def main():
         tmp = json.load(fp)
         print(tmp[1]["bar"])
     chrom = chromosome.Chromosome('./res/testTaskList.json')
-    print(chrom.task_list)
+    for tsk in chrom.task_list:
+        print(tsk)
+    print(chrom)
 
 
 if __name__ == '__main__':
