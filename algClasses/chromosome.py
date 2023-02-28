@@ -55,11 +55,89 @@ class Chromosome:
                 break
         self.fit = final_cost
 
-
-    #--------------------------
+    # --------------------------
     # операторы рекомбинации
-    #--------------------------
+    # --------------------------
 
-def one_point_croossingover(parent1,parent2,cut_point):
-    arr1 = []
-    arr2 = []
+
+    def one_point_croossingover(parent1, parent2, cut_point):
+        """
+        Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка
+        :param parent1: Хромосома-родитель1
+        :param parent2: Хромосома-родитель2
+        :param cut_point: точка разреза
+        :type parent1: Chromosome
+        :type parent2: Chromosome
+        :type cut_point: int
+        :return: Массив с двумя хромосомами-потомками
+        :rtype: list
+        """
+        arr1 = parent1.chromosome[:cut_point] + parent2.chromosome[cut_point:]
+        arr2 = parent2.chromosome[:cut_point] + parent1.chromosome[cut_point:]
+        chrom1 = Chromosome()
+        chrom2 = Chromosome()
+        chrom1.chromosome = arr1
+        chrom2.chromosome = arr2
+        return [chrom1, chrom2]
+
+
+    def two_point_crossingover(parent1, parent2, first_cut_point, second_cut_point):
+        """
+        Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка. Если первая точка дальеш чем вторая -
+            меняет их местами.
+        :param parent1: Хромосома-родитель1
+        :param parent2: Хромосома-родитель2
+        :param first_cut_point: первая точка разреза
+        :param second_cut_point: вторая точка разреза
+        :type parent1: Chromosome
+        :type parent2: Chromosome
+        :type first_cut_point: int
+        :type second_cut_point: int
+        :return: Массив с двумя хромосомами-потомками
+        :rtype: list
+        """
+        if first_cut_point > second_cut_point:
+            tmp = first_cut_point
+            first_cut_point = second_cut_point
+            second_cut_point = tmp
+        arr1 = parent1.chromosome[:first_cut_point] + parent2.chromosome[
+                                                      first_cut_point:second_cut_point] + parent1.chromosome[
+                                                                                          second_cut_point:]
+        arr2 = parent2.chromosome[:first_cut_point] + parent1.chromosome[
+                                                      first_cut_point:second_cut_point] + parent2.chromosome[
+                                                                                          second_cut_point:]
+        chrom1 = Chromosome()
+        chrom2 = Chromosome()
+        chrom1.chromosome = arr1
+        chrom2.chromosome = arr2
+        return [chrom1, chrom2]
+
+
+    def binary_mask_crossingover(parent1, parent2, binary_dude):
+        """
+        Триадный кроссинговер. Помимо двух хромосом родителей использует
+        :param parent1: хромосома-родитель1
+        :type parent1: Chromosome
+        :param parent2: хромосома-родитель2
+        :type parent2: Chromosome
+        :param binary_dude: хромосома для бинарной маски
+        :type binary_dude: Chromosome
+        :return: массив с двумя хромосомами потомками
+        :rtype: list
+        """
+        arr1 = parent1.chromosome[:]
+        arr2 = parent2.chromosome[:]
+        for i in range(len(parent1.chromosome)):
+            if binary_dude.chromosome[i] == 0:
+                arr1[i] = parent2.chromosome[i]
+                arr2[i] = parent1.chromosome[i]
+        chr1 = Chromosome()
+        chr2 = Chromosome()
+        chr1.chromosome = arr1
+        chr2.chromosome = arr2
+        return [chr1, chr2]
+
+    # --------------------------
+    # операторы мутации
+    # --------------------------
+
