@@ -59,7 +59,6 @@ class Chromosome:
     # операторы рекомбинации
     # --------------------------
 
-
     def one_point_croossingover(parent1, parent2, cut_point):
         """
         Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка
@@ -79,7 +78,6 @@ class Chromosome:
         chrom1.chromosome = arr1
         chrom2.chromosome = arr2
         return [chrom1, chrom2]
-
 
     def two_point_crossingover(parent1, parent2, first_cut_point, second_cut_point):
         """
@@ -112,7 +110,6 @@ class Chromosome:
         chrom2.chromosome = arr2
         return [chrom1, chrom2]
 
-
     def binary_mask_crossingover(parent1, parent2, binary_dude):
         """
         Триадный кроссинговер. Помимо двух хромосом родителей использует
@@ -141,3 +138,49 @@ class Chromosome:
     # операторы мутации
     # --------------------------
 
+    def common_binary_mutation(self, probability):
+        """
+        Обычная бинарная мутация. Каждый бит может мутировать с некоторой вероятностью.
+        :param probability: Вероятность мутации каждого бита. Лежит в промежутке от 0 до 1
+        :type probability: float
+        :return:
+        """
+        for i in range(len(self.chromosome)):
+            if random.random() > probability:
+                if self.chromosome[i] == 1:
+                    self.chromosome[i] = 0
+                else:
+                    self.chromosome[i] = 1
+
+    def inversion_mutation(self, start, end):
+        """
+        Мутация-инверсия. Участок в хромосоме, обозначенный start и end переворачивается.
+        Если начало находится дальше конца то они меняются местами.
+        :param start:
+        :param end:
+        :return:
+        """
+        if start > end:
+            tmp = start
+            start = end
+            end = tmp
+        self.chromosome = self.chromosome[:start] + self.chromosome[start:end][::-1] + self.chromosome[end:]
+
+    def translocation_mutation(self, start_first, end_first, start_second, end_second):
+        """
+        Мутация-транслокация. Два выбранных промежутка меняются местами.
+        Все указанные начала и концы отрезков будут отсортированы в возрастающем порядке дабы избежать наложения.
+        :param start_first:
+        :param end_first:
+        :param start_second:
+        :param end_second:
+        :type start_first: int
+        :type end_first: int
+        :type start_second: int
+        :type end_second: int
+        :return:
+        """
+        arr = [start_first, end_first, start_second, end_second]  # сортировка во избежание наложения
+        arr.sort()
+        self.chromosome = self.chromosome[:arr[0]] + self.chromosome[arr[0]:arr[1]] + self.chromosome[arr[1]:arr[2]] + \
+                          self.chromosome[arr[2]:arr[3]] + self.chromosome[arr[3]:]
