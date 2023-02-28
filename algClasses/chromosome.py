@@ -59,7 +59,7 @@ class Chromosome:
     # операторы рекомбинации
     # --------------------------
 
-    def one_point_croossingover(parent1, parent2, cut_point):
+    def one_point_crossingover(parent1, parent2, cut_point):
         """
         Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка
         :param parent1: Хромосома-родитель1

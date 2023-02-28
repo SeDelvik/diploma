@@ -1,4 +1,4 @@
-from chromosome import Chromosome
+from algClasses.chromosome import Chromosome
 
 
 class Simple_GA:
