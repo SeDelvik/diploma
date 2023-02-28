@@ -151,6 +151,7 @@ class Chromosome:
                     self.chromosome[i] = 0
                 else:
                     self.chromosome[i] = 1
+        self.count_self_fit()
 
     def inversion_mutation(self, start, end):
         """
@@ -165,6 +166,7 @@ class Chromosome:
             start = end
             end = tmp
         self.chromosome = self.chromosome[:start] + self.chromosome[start:end][::-1] + self.chromosome[end:]
+        self.count_self_fit()
 
     def translocation_mutation(self, start_first, end_first, start_second, end_second):
         """
@@ -184,3 +186,4 @@ class Chromosome:
         arr.sort()
         self.chromosome = self.chromosome[:arr[0]] + self.chromosome[arr[0]:arr[1]] + self.chromosome[arr[1]:arr[2]] + \
                           self.chromosome[arr[2]:arr[3]] + self.chromosome[arr[3]:]
+        self.count_self_fit()
