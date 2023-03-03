@@ -1,5 +1,5 @@
 from algClasses.chromosome import Chromosome
-from algClasses.genetic_algorithm import Simple_GA
+from algClasses.genetic_algorithm import SimpleGeneticAlgorithm
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     for obj in chrom.one_point_crossingover(chrom2, 2):
         print(f"children: {obj}")
 
-    Simple_GA(10, './res/testTaskList.json')
+    SimpleGeneticAlgorithm(10, './res/testTaskList.json')
 
 
 if __name__ == '__main__':

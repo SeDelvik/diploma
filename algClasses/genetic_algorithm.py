@@ -1,10 +1,11 @@
+import math
 import random
 import copy
 
 from algClasses.chromosome import Chromosome
 
 
-class Simple_GA:
+class SimpleGeneticAlgorithm:
     def __init__(self, population_count, src, operator, probability=0):
         """
         Создание простого генетического алгоритма.
@@ -193,3 +194,13 @@ class Simple_GA:
             else:
                 self.elite_selection(new_population, len(self.population))
             self.find_best_person()
+
+class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
+    def __init__(self, population_count, src, operator): # population_count должен быть квадратом числа
+        super().__init__(population_count, src, operator)
+        self.cells_population = []
+        self.create_cells_population()
+
+    def create_cells_population(self):
+        col_row_count = round(math.sqrt(len(self.population)))
+        # todo доделать
