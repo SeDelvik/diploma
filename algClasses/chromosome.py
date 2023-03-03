@@ -4,11 +4,9 @@ import algClasses.task as task
 
 
 class Chromosome:
-    task_list = []  # массив, хранящий обьекты-задачи. нужен для расчета приспособленности хромосомы.
+    task_list = []  # Массив, хранящий объекты-задачи. Нужен для расчета приспособленности хромосомы.
 
-    def __init__(self, path=''):
-        if len(self.task_list) < 1:
-            self.create_task_list(path)
+    def __init__(self):
         self.chromosome = self.create_random_chromosome(len(self.task_list))
         self.fit = 0
         self.count_self_fit()
@@ -18,7 +16,7 @@ class Chromosome:
 
     @staticmethod
     def create_task_list(path):
-        """инициализирует статический массив задач."""
+        """Инициализирует статический массив задач."""
         with open(path, 'r') as fp:
             tmp_task_data = json.load(fp)
             for task1 in tmp_task_data:
@@ -39,7 +37,7 @@ class Chromosome:
             arr.append(random.randint(0, 1))
         return arr
 
-    def count_self_fit(self):  # проверялось на int времени. что будет на date не известно
+    def count_self_fit(self):  # Проверялось на int времени. Что будет на date не известно
         """Считает приспособленность хромосомы."""
         last_time = 0
         final_cost = 0
@@ -55,39 +53,53 @@ class Chromosome:
                 break
         self.fit = final_cost
 
+    def hamming_distance(self, other_chromosome):
+        """
+        Счиатет хеммингово расстояние на основе двух хромосом - себя и переданной аргументом
+        :param other_chromosome: хромосома для подсчета расстояния
+        :type other_chromosome: Chromosome
+        :return: хеммингово расстояние
+        :rtype: int
+        """
+        count = 0
+        for i in range(len(self.chromosome)):
+            if self.chromosome[i] != other_chromosome.chromosome[i]:
+                count += 1
+        return count
+
     # --------------------------
     # операторы рекомбинации
     # --------------------------
 
-    def one_point_crossingover(parent1, parent2, cut_point):
+    def one_point_crossingover(self, parent2, cut_point):
         """
         Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка
-        :param parent1: Хромосома-родитель1
+        :param self: Хромосома-родитель1
         :param parent2: Хромосома-родитель2
         :param cut_point: точка разреза
-        :type parent1: Chromosome
+        :type self: Chromosome
         :type parent2: Chromosome
         :type cut_point: int
         :return: Массив с двумя хромосомами-потомками
         :rtype: list
         """
-        arr1 = parent1.chromosome[:cut_point] + parent2.chromosome[cut_point:]
-        arr2 = parent2.chromosome[:cut_point] + parent1.chromosome[cut_point:]
+        arr1 = self.chromosome[:cut_point] + parent2.chromosome[cut_point:]
+        arr2 = parent2.chromosome[:cut_point] + self.chromosome[cut_point:]
         chrom1 = Chromosome()
         chrom2 = Chromosome()
         chrom1.chromosome = arr1
         chrom2.chromosome = arr2
         return [chrom1, chrom2]
 
-    def two_point_crossingover(parent1, parent2, first_cut_point, second_cut_point):
+    def two_point_crossingover(self, parent2, first_cut_point, second_cut_point):
         """
         Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка. Если первая точка дальеш чем вторая -
             меняет их местами.
-        :param parent1: Хромосома-родитель1
+        :param self: Хромосома-родитель1
         :param parent2: Хромосома-родитель2
         :param first_cut_point: первая точка разреза
         :param second_cut_point: вторая точка разреза
-        :type parent1: Chromosome
+        :type self: Chromosome
         :type parent2: Chromosome
         :type first_cut_point: int
         :type second_cut_point: int
@@ -98,10 +110,10 @@ class Chromosome:
             tmp = first_cut_point
             first_cut_point = second_cut_point
             second_cut_point = tmp
-        arr1 = parent1.chromosome[:first_cut_point] + parent2.chromosome[
-                                                      first_cut_point:second_cut_point] + parent1.chromosome[
-                                                                                          second_cut_point:]
-        arr2 = parent2.chromosome[:first_cut_point] + parent1.chromosome[
+        arr1 = self.chromosome[:first_cut_point] + parent2.chromosome[
+                                                   first_cut_point:second_cut_point] + self.chromosome[
+                                                                                       second_cut_point:]
+        arr2 = parent2.chromosome[:first_cut_point] + self.chromosome[
                                                       first_cut_point:second_cut_point] + parent2.chromosome[
                                                                                           second_cut_point:]
         chrom1 = Chromosome()
@@ -110,11 +122,11 @@ class Chromosome:
         chrom2.chromosome = arr2
         return [chrom1, chrom2]
 
-    def binary_mask_crossingover(parent1, parent2, binary_dude):
+    def binary_mask_crossingover(self, parent2, binary_dude):
         """
         Триадный кроссинговер. Помимо двух хромосом родителей использует
-        :param parent1: хромосома-родитель1
-        :type parent1: Chromosome
+        :param self: хромосома-родитель1
+        :type self: Chromosome
         :param parent2: хромосома-родитель2
         :type parent2: Chromosome
         :param binary_dude: хромосома для бинарной маски
@@ -122,12 +134,12 @@ class Chromosome:
         :return: массив с двумя хромосомами потомками
         :rtype: list
         """
-        arr1 = parent1.chromosome[:]
+        arr1 = self.chromosome[:]
         arr2 = parent2.chromosome[:]
-        for i in range(len(parent1.chromosome)):
+        for i in range(len(self.chromosome)):
             if binary_dude.chromosome[i] == 0:
                 arr1[i] = parent2.chromosome[i]
-                arr2[i] = parent1.chromosome[i]
+                arr2[i] = self.chromosome[i]
         chr1 = Chromosome()
         chr2 = Chromosome()
         chr1.chromosome = arr1

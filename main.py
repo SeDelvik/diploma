@@ -3,12 +3,13 @@ from algClasses.genetic_algorithm import Simple_GA
 
 
 def main():
-    chrom = Chromosome('./res/testTaskList.json')
+    Chromosome.create_task_list('./res/testTaskList.json')
+    chrom = Chromosome()
     for tsk in chrom.task_list:
         print(tsk)
 
     chrom2 = Chromosome()
-    print(f"parent1: {chrom}")
+    print(f"self: {chrom}")
     print(f"parent2: {chrom2}")
 
     for obj in chrom.one_point_crossingover(chrom2, 2):
