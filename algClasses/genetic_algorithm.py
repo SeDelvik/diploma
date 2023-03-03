@@ -6,16 +6,13 @@ from algClasses.chromosome import Chromosome
 
 
 class SimpleGeneticAlgorithm:
-    def __init__(self, population_count, src, operator, probability=0):
+    def __init__(self, population_count: int, src: str, operator: list[int], probability=0):
         """
         Создание простого генетического алгоритма.
         :param population_count: количество особей в популяции
         :param src: путь до файла с тасками
         :param operator: массив с номерами используемых операторов
         :param probability: вероятность мутации. Используется только в обычной бинарной мутации
-        :type population_count: int
-        :type src: str
-        :type operator: list
         """
         self.probability = probability
         if self.probability == 0:
@@ -27,15 +24,12 @@ class SimpleGeneticAlgorithm:
         self.find_best_person()
 
     @staticmethod
-    def create_population(population_count, src):
+    def create_population(population_count: int, src: str) -> list[Chromosome]:
         """
         Создает новую популяцию.
         :param population_count: число особей в популяции
         :param src: путь до файла с популяцией
-        :type population_count: int
-        :type src: str
         :return: новая популяция
-        :rtype: list
         """
         arr = []
         Chromosome.create_task_list(src)
@@ -44,6 +38,10 @@ class SimpleGeneticAlgorithm:
         return arr
 
     def find_best_person(self):
+        """
+        Ищет лучшую особь в популяции и записывает в параметры экземпляра
+        :return:
+        """
         tmp_arr = self.population[:]
         tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=True)
         self.bestChromosome = copy.deepcopy(tmp_arr[0])
@@ -52,19 +50,17 @@ class SimpleGeneticAlgorithm:
     # Операторы выбора родителей
     # -----------------
 
-    def panmixia(self):
+    def panmixia(self) -> list[Chromosome]:
         """
         Возвращает 2 случайные хромосомы
         :return: массив из двух случайных хромосом
-        :rtype: list
         """
         return random.choices(self.population, k=2)
 
-    def outbreeding(self):
+    def outbreeding(self) -> list[Chromosome]:
         """
         Аутбридинг. Выбирает первую хромосому случайно, вторую подбирает из популяции по наибольшему Хемминговому расстоянию
         :return: массив из двух хромосом
-        :rtype: list
         """
         hamming_array = []
         best_hamming = 0
@@ -79,11 +75,10 @@ class SimpleGeneticAlgorithm:
                 hamming_array.append(chromosome)
         return [first_parent, random.choice(hamming_array)]
 
-    def selection(self):
+    def selection(self) -> list[Chromosome]:
         """
         Селекция. Возвращает две хромосомы у которых приспособленность не меньше чем средняя
         :return: массив из двух хромосом
-        :rtype: list
         """
         avg_fit = 0
         for chromosome in self.population:
@@ -100,22 +95,19 @@ class SimpleGeneticAlgorithm:
     # операторы создания новой популяции
     # -------------------------------------------------------------
 
-    def substitution(self, new_population):
+    def substitution(self, new_population: list[Chromosome]):
         """
         Полное замещение потомков родителями.
         :param new_population: Новая популяция хромосом
-        :type new_population: list
         :return:
         """
         self.population = new_population
 
-    def truncation(self, new_population, max_count_population):
+    def truncation(self, new_population: list[Chromosome], max_count_population: int):
         """
         Замещение. Из популяции родителей и потомков собирает новую популяцию, состоящую из лучших.
         :param new_population: Популяция потомков.
         :param max_count_population: Число особей в новом поколении.
-        :type new_population: list
-        :type max_count_population: int
         :return:
         """
         tmp_population = self.population + new_population
@@ -123,13 +115,11 @@ class SimpleGeneticAlgorithm:
         tmp_population = tmp_population[:max_count_population - 1]
         self.population = tmp_population
 
-    def elite_selection(self, new_population, max_count_population):
+    def elite_selection(self, new_population: list[Chromosome], max_count_population: int):
         """
         Элитарный отбор. Выбирается 10% лучших. Остальное замещается новыми потомками.
         :param new_population: Популяция потомков.
         :param max_count_population: Число особей в новом поколении.
-        :type new_population: list
-        :type max_count_population: int
         :return:
         """
         tmp_population = self.population + new_population

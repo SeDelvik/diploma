@@ -1,6 +1,7 @@
 import json
 import random
 import algClasses.task as task
+from __future__ import annotations
 
 
 class Chromosome:
@@ -15,8 +16,12 @@ class Chromosome:
         return f"fit: {self.fit}, chromosome: {self.chromosome}"
 
     @staticmethod
-    def create_task_list(path):
-        """Инициализирует статический массив задач."""
+    def create_task_list(path: str):
+        """
+        Инициализирует статический массив задач.
+        :param path: Путь до .json файла
+        :return:
+        """
         with open(path, 'r') as fp:
             tmp_task_data = json.load(fp)
             for task1 in tmp_task_data:
@@ -30,15 +35,22 @@ class Chromosome:
                 Chromosome.task_list.append(tmp_task)
         Chromosome.task_list.sort(key=lambda tsk: tsk.deadline)
 
-    def create_random_chromosome(self, length):
-        """Создает случайную хромосому"""
+    def create_random_chromosome(self, length: int) -> list[int]:
+        """
+        Создает случайную хромосому
+        :param length: длинна хромосомы
+        :return: новая хромосома
+        """
         arr = []
         for i in range(length):
             arr.append(random.randint(0, 1))
         return arr
 
     def count_self_fit(self):  # Проверялось на int времени. Что будет на date не известно
-        """Считает приспособленность хромосомы."""
+        """
+        Считает приспособленность хромосомы.
+        :return:
+        """
         last_time = 0
         final_cost = 0
         for i in range(len(self.chromosome)):
@@ -53,13 +65,11 @@ class Chromosome:
                 break
         self.fit = final_cost
 
-    def hamming_distance(self, other_chromosome):
+    def hamming_distance(self, other_chromosome: Chromosome) -> int:
         """
         Счиатет хеммингово расстояние на основе двух хромосом - себя и переданной аргументом
         :param other_chromosome: хромосома для подсчета расстояния
-        :type other_chromosome: Chromosome
         :return: хеммингово расстояние
-        :rtype: int
         """
         count = 0
         for i in range(len(self.chromosome)):
@@ -71,17 +81,14 @@ class Chromosome:
     # операторы рекомбинации
     # --------------------------
 
-    def one_point_crossingover(self, parent2, cut_point):
+    def one_point_crossingover(self, parent2: Chromosome, cut_point: int) -> list[Chromosome]:
         """
         Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка
         :param self: Хромосома-родитель1
         :param parent2: Хромосома-родитель2
         :param cut_point: точка разреза
-        :type self: Chromosome
-        :type parent2: Chromosome
         :type cut_point: int
         :return: Массив с двумя хромосомами-потомками
-        :rtype: list
         """
         arr1 = self.chromosome[:cut_point] + parent2.chromosome[cut_point:]
         arr2 = parent2.chromosome[:cut_point] + self.chromosome[cut_point:]
@@ -91,7 +98,7 @@ class Chromosome:
         chrom2.chromosome = arr2
         return [chrom1, chrom2]
 
-    def two_point_crossingover(self, parent2, first_cut_point, second_cut_point):
+    def two_point_crossingover(self, parent2: Chromosome, first_cut_point: int, second_cut_point: int) -> list[Chromosome]:
         """
         Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка. Если первая точка дальеш чем вторая -
             меняет их местами.
@@ -99,12 +106,7 @@ class Chromosome:
         :param parent2: Хромосома-родитель2
         :param first_cut_point: первая точка разреза
         :param second_cut_point: вторая точка разреза
-        :type self: Chromosome
-        :type parent2: Chromosome
-        :type first_cut_point: int
-        :type second_cut_point: int
         :return: Массив с двумя хромосомами-потомками
-        :rtype: list
         """
         if first_cut_point > second_cut_point:
             tmp = first_cut_point
@@ -122,17 +124,13 @@ class Chromosome:
         chrom2.chromosome = arr2
         return [chrom1, chrom2]
 
-    def binary_mask_crossingover(self, parent2, binary_dude):
+    def binary_mask_crossingover(self, parent2: Chromosome, binary_dude: Chromosome) -> list[Chromosome]:
         """
         Триадный кроссинговер. Помимо двух хромосом родителей использует
         :param self: хромосома-родитель1
-        :type self: Chromosome
         :param parent2: хромосома-родитель2
-        :type parent2: Chromosome
         :param binary_dude: хромосома для бинарной маски
-        :type binary_dude: Chromosome
         :return: массив с двумя хромосомами потомками
-        :rtype: list
         """
         arr1 = self.chromosome[:]
         arr2 = parent2.chromosome[:]
@@ -150,11 +148,10 @@ class Chromosome:
     # операторы мутации
     # --------------------------
 
-    def common_binary_mutation(self, probability):
+    def common_binary_mutation(self, probability: float):
         """
         Обычная бинарная мутация. Каждый бит может мутировать с некоторой вероятностью.
         :param probability: Вероятность мутации каждого бита. Лежит в промежутке от 0 до 1
-        :type probability: float
         :return:
         """
         for i in range(len(self.chromosome)):
@@ -165,12 +162,12 @@ class Chromosome:
                     self.chromosome[i] = 1
         self.count_self_fit()
 
-    def inversion_mutation(self, start, end):
+    def inversion_mutation(self, start: int, end: int):
         """
         Мутация-инверсия. Участок в хромосоме, обозначенный start и end переворачивается.
-        Если начало находится дальше конца то они меняются местами.
-        :param start:
-        :param end:
+        Если начало находится дальше конца, то они меняются местами.
+        :param start: Начало отрезка.
+        :param end: Конец отрезка.
         :return:
         """
         if start > end:
@@ -180,18 +177,14 @@ class Chromosome:
         self.chromosome = self.chromosome[:start] + self.chromosome[start:end][::-1] + self.chromosome[end:]
         self.count_self_fit()
 
-    def translocation_mutation(self, start_first, end_first, start_second, end_second):
+    def translocation_mutation(self, start_first: int, end_first: int, start_second: int, end_second: int):
         """
         Мутация-транслокация. Два выбранных промежутка меняются местами.
         Все указанные начала и концы отрезков будут отсортированы в возрастающем порядке дабы избежать наложения.
-        :param start_first:
-        :param end_first:
-        :param start_second:
-        :param end_second:
-        :type start_first: int
-        :type end_first: int
-        :type start_second: int
-        :type end_second: int
+        :param start_first: Начало первого отрезка.
+        :param end_first: Конец первого отрезка.
+        :param start_second: Начало второго отрезка.
+        :param end_second: Конец второго отрезка.
         :return:
         """
         arr = [start_first, end_first, start_second, end_second]  # сортировка во избежание наложения
