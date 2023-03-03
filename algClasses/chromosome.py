@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 import json
 import random
 import algClasses.task as task
-from __future__ import annotations
 
 
 class Chromosome:

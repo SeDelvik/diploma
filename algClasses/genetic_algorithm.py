@@ -27,14 +27,15 @@ class SimpleGeneticAlgorithm:
     def create_population(population_count: int, src: str) -> list[Chromosome]:
         """
         Создает новую популяцию.
-        :param population_count: число особей в популяции
-        :param src: путь до файла с популяцией
-        :return: новая популяция
+        :param population_count: Число особей в популяции.
+        :param src: Путь до файла с популяцией.
+        :return: Новая популяция.
         """
         arr = []
         Chromosome.create_task_list(src)
         for i in range(population_count):
-            arr.append(Chromosome)
+            chromosome = Chromosome()
+            arr.append(chromosome)
         return arr
 
     def find_best_person(self):

@@ -15,7 +15,7 @@ def main():
     for obj in chrom.one_point_crossingover(chrom2, 2):
         print(f"children: {obj}")
 
-    SimpleGeneticAlgorithm(10, './res/testTaskList.json')
+    SimpleGeneticAlgorithm(10, './res/testTaskList.json',[0,0,0,0])
 
 
 if __name__ == '__main__':
