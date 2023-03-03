@@ -139,7 +139,7 @@ class SimpleGeneticAlgorithm:
             tmp_population.append(Chromosome())
         self.population = tmp_population
 
-    def one_cycle(self):  # todo переписать на что-нибудь более приятное
+    def one_cycle(self):
         """
         Создает новое поколение хромосом основываясь на выбранных операторах и существующем поколении родителей.
         :return:
@@ -195,12 +195,115 @@ class SimpleGeneticAlgorithm:
                 self.elite_selection(new_population, len(self.population))
             self.find_best_person()
 
+
 class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
-    def __init__(self, population_count, src, operator): # population_count должен быть квадратом числа
-        super().__init__(population_count, src, operator)
+    def __init__(self, population_count, src, operator):  # population_count должен быть квадратом числа
+        super().__init__(population_count, src, operator)  # здесь нужно всего 2 оператора
         self.cells_population = []
         self.create_cells_population()
 
     def create_cells_population(self):
+        """
+        Создает новую ячеистую популяцию на базе внутреннего списка особей
+        :return:
+        """
+        array = []
         col_row_count = round(math.sqrt(len(self.population)))
-        # todo доделать
+        pos = 0
+        for i in range(col_row_count):
+            new_row = []
+            array.append(new_row)
+            for j in range(col_row_count):
+                new_row.append(self.population[pos])
+                pos += 1
+        self.cells_population = array
+
+    def get_partner_for_cell(self, row: int, col: int) -> list[Chromosome]:
+        """
+        Возвращает список из 4 соседей хромосомы, указанной по номеру строки и колонки.
+        :param row: номер строки (начинается с 0)
+        :param col: номер колонки (начинается с 0)
+        :return: массив из 4 хромосом
+        """
+        col_row_count = round(math.sqrt(len(self.population)))
+        maybe_partners = []
+        if row == 0:
+            maybe_partners.append(self.cells_population[col_row_count - 1][col])  # верх
+            maybe_partners.append(self.cells_population[row + 1][col])  # низ
+        elif row == col_row_count - 1:
+            maybe_partners.append(self.cells_population[row - 1][col])  # верх
+            maybe_partners.append(self.cells_population[0][col])  # низ
+        else:
+            maybe_partners.append(self.cells_population[row - 1][col])  # верх
+            maybe_partners.append(self.cells_population[row + 1][col])  # низ
+
+        if col == 0:
+            maybe_partners.append(self.cells_population[row][col_row_count - 1])  # лево
+            maybe_partners.append(self.cells_population[row][col + 1])  # право
+        elif col == col_row_count - 1:
+            maybe_partners.append(self.cells_population[row][col - 1])  # лево
+            maybe_partners.append(self.cells_population[row][0])  # право
+        else:
+            maybe_partners.append(self.cells_population[row][col - 1])  # лево
+            maybe_partners.append(self.cells_population[row][col + 1])  # право
+
+        return maybe_partners
+
+    def new_selection(self, row: int, col: int) -> list[Chromosome]:
+        """
+        Селекция для ячеистого генетического алгоритма. Создает пару из двух родителей.
+        :param row: номер строки (начинается с 0)
+        :param col: номер колонки (начинается с 0)
+        :return: массив из двух хромосом-родителей
+        """
+        parent1 = self.cells_population[row][col]
+        parents_array = self.get_partner_for_cell(row, col)
+        parents_array.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+        parent2 = parents_array[0]
+        return [parent1, parent2]
+
+    def one_cycle(self):
+        """
+        Один цикл работы ячеистого генетического алгоритма. После работы поколение заменяется на новое.
+        :return:
+        """
+        col_row_count = round(math.sqrt(len(self.population)))
+        new_flat_population = []
+        for i in range(col_row_count):
+            for j in range(col_row_count):
+                # выбор родителей
+                parents = self.new_selection(i, j)
+                # скрещивание
+                if self.operators[0] == 0:
+                    children = parents[0].one_point_crossingover(parents[1],
+                                                                 random.randint(0, len(parents[1].chromosome) - 1))
+                elif self.operators[0] == 1:
+                    children = parents[0].two_point_crossingover(parents[1],
+                                                                 random.randint(0, len(parents[1].chromosome) - 1),
+                                                                 random.randint(0, len(parents[1].chromosome) - 1))
+                else:
+                    children = parents[0].binary_mask_crossingover(parents[1], random.choice(self.population))
+
+                #мутация
+                if self.operators[1] == 0:
+                    children[0].common_binary_mutation(self.probability)
+                    children[1].common_binary_mutation(self.probability)
+                elif self.operators[1] == 1:
+                    children[0].inversion_mutation(random.randint(0, len(self.population) - 1),
+                                                   random.randint(0, len(self.population) - 1))
+                    children[1].inversion_mutation(random.randint(0, len(self.population) - 1),
+                                                   random.randint(0, len(self.population) - 1))
+                else:
+                    children[0].translocation_mutation(random.randint(0, len(self.population) - 1),
+                                                       random.randint(0, len(self.population) - 1),
+                                                       random.randint(0, len(self.population) - 1),
+                                                       random.randint(0, len(self.population) - 1))
+                    children[1].translocation_mutation(random.randint(0, len(self.population) - 1),
+                                                       random.randint(0, len(self.population) - 1),
+                                                       random.randint(0, len(self.population) - 1),
+                                                       random.randint(0, len(self.population) - 1))
+                children.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+                new_flat_population.append(children[0])
+        self.population = new_flat_population
+        self.find_best_person()
+        self.create_cells_population()
