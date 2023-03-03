@@ -1,3 +1,4 @@
+import json
 import math
 import random
 import copy
@@ -275,7 +276,7 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
                 else:
                     children = parents[0].binary_mask_crossingover(parents[1], random.choice(self.population))
 
-                #мутация
+                # мутация
                 if self.operators[1] == 0:
                     children[0].common_binary_mutation(self.probability)
                     children[1].common_binary_mutation(self.probability)
@@ -298,3 +299,28 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
         self.population = new_flat_population
         self.find_best_person()
         self.create_cells_population()
+
+
+class IslandGeneticAlgorithm:
+    def __init__(self, count_island: int, one_island_population_count: int, src_doc: str):
+        self.islands = []
+        self.create_islands(count_island, one_island_population_count, src_doc)
+
+    def create_islands(self, count_islands: int, one_islands_population_count: int, src_doc: str):
+        """
+        Создает \"острова\".
+        :param count_islands: Количество островов.
+        :param one_islands_population_count: Количество особей на одном острове.
+        :param src_doc: Файл с тасками.
+        :return:
+        """
+        for i in range(count_islands):
+            simple_gen_alg = SimpleGeneticAlgorithm(one_islands_population_count, src_doc,
+                                                    [random.randint(0, 3), random.randint(0, 3), random.randint(0, 3),
+                                                     random.randint(0, 3)])
+            self.islands.append(simple_gen_alg)
+
+    # from concurrent.futures import ProcessPoolExecutor
+    # https://habr.com/ru/company/wunderfund/blog/581994/
+    def one_cycle(self):
+        pass

@@ -99,7 +99,8 @@ class Chromosome:
         chrom2.chromosome = arr2
         return [chrom1, chrom2]
 
-    def two_point_crossingover(self, parent2: Chromosome, first_cut_point: int, second_cut_point: int) -> list[Chromosome]:
+    def two_point_crossingover(self, parent2: Chromosome, first_cut_point: int, second_cut_point: int) -> list[
+        Chromosome]:
         """
         Применяет одноточечный кроссинговер. Возвращает 2 новые хромосомы-потомка. Если первая точка дальеш чем вторая -
             меняет их местами.
