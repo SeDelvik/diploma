@@ -10,10 +10,10 @@ class SimpleGeneticAlgorithm:
     def __init__(self, population_count: int, src: str, operator: list[int], probability=0):
         """
         Создание простого генетического алгоритма.
-        :param population_count: количество особей в популяции
-        :param src: путь до файла с тасками
-        :param operator: массив с номерами используемых операторов
-        :param probability: вероятность мутации. Используется только в обычной бинарной мутации
+        :param population_count: Количество особей в популяции.
+        :param src: Путь до файла с тасками.
+        :param operator: Массив с номерами используемых операторовю
+        :param probability: Вероятность мутации. Используется только в обычной бинарной мутации.
         """
         self.probability = probability
         if self.probability == 0:
@@ -213,9 +213,9 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
     def get_partner_for_cell(self, row: int, col: int) -> list[Chromosome]:
         """
         Возвращает список из 4 соседей хромосомы, указанной по номеру строки и колонки.
-        :param row: номер строки (начинается с 0)
-        :param col: номер колонки (начинается с 0)
-        :return: массив из 4 хромосом
+        :param row: Номер строки (начинается с 0).
+        :param col: Номер колонки (начинается с 0).
+        :return: Массив из 4 хромосом.
         """
         col_row_count = round(math.sqrt(len(self.population)))
         maybe_partners = []
@@ -244,9 +244,9 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
     def new_selection(self, row: int, col: int) -> list[Chromosome]:
         """
         Селекция для ячеистого генетического алгоритма. Создает пару из двух родителей.
-        :param row: номер строки (начинается с 0)
-        :param col: номер колонки (начинается с 0)
-        :return: массив из двух хромосом-родителей
+        :param row: Номер строки (начинается с 0).
+        :param col: Номер колонки (начинается с 0).
+        :return: Массив из двух хромосом-родителей.
         """
         parent1 = self.cells_population[row][col]
         parents_array = self.get_partner_for_cell(row, col)
@@ -302,7 +302,18 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
 
 
 class IslandGeneticAlgorithm:
-    def __init__(self, count_island: int, one_island_population_count: int, src_doc: str):
+    def __init__(self, count_island: int, one_island_population_count: int, src_doc: str, count_generation: int,
+                 count_person_in_swap: int):
+        """
+        Создает новый Островной генетический алгоритм.
+        :param count_island: Количество островов.
+        :param one_island_population_count: Величина популяции на каждом острове.
+        :param src_doc: Путь до файла с тасками.
+        :param count_generation: Количество поколений до обмена между островами.
+        :param count_person_in_swap: Количество особей для обмена между островами.
+        """
+        self.count_generation = count_generation
+        self.count_person_in_swap = count_person_in_swap
         self.islands = []
         self.create_islands(count_island, one_island_population_count, src_doc)
 
@@ -322,5 +333,10 @@ class IslandGeneticAlgorithm:
 
     # from concurrent.futures import ProcessPoolExecutor
     # https://habr.com/ru/company/wunderfund/blog/581994/
+    #
     def one_cycle(self):
+        """
+        Производит один цикл островного генетического алгоритма.
+        :return:
+        """
         pass
