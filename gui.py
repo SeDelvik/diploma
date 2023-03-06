@@ -6,6 +6,7 @@ from run_alg import run_alg
 variables = {}
 
 
+# todo написать скрытие ненужных полей при выборе определенных параметров
 def start_gui():
     def get_file_name():
         file = filedialog.askopenfilename(filetypes=(("JSON", "*.json"), ("all files", "*.*")))
@@ -14,17 +15,48 @@ def start_gui():
         print(variables["src"])
 
     def start_alg():
-        if "src" in variables:
-            arr_params = [choice_var.get(), recombination_var.get(), mutation_var.get(), select_var.get()]
-            variables["methode"] = alg_var.get()
-            variables["operators"] = arr_params
-            run_alg(variables)  # запуск основного алгоритма
-        else:
+        """
+        Валидация нескольких параметров, запихивание параметров в словарь и запуск основного алгоритма.
+        :return:
+        """
+        if "src" not in variables:
             lbl_error.configure(text="Файл НЕ выбран!")
+            return
+        if not is_probability(txt_probability.get()):
+            lbl_error.configure(text="Неправильно указана вероятность")
+            return
+        if spin_count.get() < spin_count_person_in_swap.get():
+            lbl_error.configure(text="Количество особей для обменя превышает количество особей в популяции")
+            return
+        arr_params = [choice_var.get(), recombination_var.get(), mutation_var.get(), select_var.get()]
+        variables["methode"] = alg_var.get()
+        variables["operators"] = arr_params
+        variables["population_count"] = int(spin_count.get())
+        variables["probability"] = float(txt_probability.get())
+        variables["island_count"] = int(spin_island_count.get())
+        variables["count_generations"] = int(spin_count_generation.get())
+        variables["count_person_in_swap"] = int(spin_count_person_in_swap.get())
+        print(variables)
+        run_alg(variables)  # запуск основного алгоритма
+
+    def is_probability(string: str) -> bool:
+        """
+        Валидация для вероятности.
+        :param string: Предполагаемая строка с вероятностью.
+        :return:
+        """
+        try:
+            num = float(string)
+            if 0 <= num <= 1:
+                return True
+            else:
+                return False
+        except ValueError:
+            return False
 
     window = Tk()
     window.title("Добро пожаловать")
-    window.geometry('800x550')
+    window.geometry('950x550')
 
     lbl = Label(window, text="Укажите scr-файл")
     lbl.grid(column=0, row=0)
@@ -34,7 +66,7 @@ def start_gui():
     lbl_src.grid(column=2, row=0)
 
     lbl_title1 = Label(window, text="Выберите используемый алгоритм и параметры")
-    lbl_title1.grid(column=0, row=1, columnspan=3)
+    lbl_title1.grid(column=0, row=1, columnspan=5)
 
     # алгоритмы
     lbl_algs = Label(window, text="Алгоритм:")
@@ -75,7 +107,7 @@ def start_gui():
 
     one_point_crossingover = 0
     two_point_crossingover = 1
-    wiht_binary_crossingover = 2
+    with_binary_crossingover = 2
 
     recombination_var = IntVar(value=one_point_crossingover)
 
@@ -83,7 +115,7 @@ def start_gui():
                                      variable=recombination_var)
     recombination_btn2 = Radiobutton(window, text="Двухточечный кроссинговер", value=two_point_crossingover,
                                      variable=recombination_var)
-    recombination_btn3 = Radiobutton(window, text="С использованием бинарной маски", value=wiht_binary_crossingover,
+    recombination_btn3 = Radiobutton(window, text="С использованием бинарной маски", value=with_binary_crossingover,
                                      variable=recombination_var)
     recombination_btn1.grid(column=2, row=3)
     recombination_btn2.grid(column=2, row=4)
@@ -129,11 +161,40 @@ def start_gui():
     select_btn2.grid(column=4, row=4)
     select_btn3.grid(column=4, row=5)
 
+    # дополнительно
+    lbl_count = Label(window, text="Количество особей в поколении")
+    spin_count_var = IntVar()
+    spin_count_var.set(100)
+    spin_count = Spinbox(window, from_=10, to=1000, textvariable=spin_count_var)
+    lbl_count.grid(column=0, row=6)
+    spin_count.grid(column=1, row=6)
+
+    lbl_probability = Label(window, text="Вероятность для бинарной мутации")
+    txt_probability = Entry(window)
+    txt_probability.insert(0, "0")
+    lbl_probability.grid(column=0, row=7)
+    txt_probability.grid(column=1, row=7)
+
+    lbl_island_count = Label(window, text="Количество \"островов\"")
+    spin_island_count = Spinbox(window, from_=2, to=10)  # я не думаю что эта тварь справится если выставить больше
+    lbl_island_count.grid(column=0, row=8)
+    spin_island_count.grid(column=1, row=8)
+
+    lbl_count_generation = Label(window, text="Количество поколений до обменя")
+    spin_count_generation = Spinbox(window, from_=1, to=100)
+    lbl_count_generation.grid(column=0, row=9)
+    spin_count_generation.grid(column=1, row=9)
+
+    lbl_count_person_in_swap = Label(window, text="Количество особей в обмене между островами")
+    spin_count_person_in_swap = Spinbox(window, from_=1, to=1000)
+    lbl_count_person_in_swap.grid(column=0, row=10)
+    spin_count_person_in_swap.grid(column=1, row=10)
+
     # кнопка начала
 
     btn_start = Button(window, text="Запустить", command=start_alg)
-    btn_start.grid(column=0, row=6)
-    lbl_error = Label(window, text="")
-    lbl_error.grid(column=1, row=6)
+    btn_start.grid(column=0, row=11, columnspan=5)
+    lbl_error = Label(window, text="", fg="red")
+    lbl_error.grid(column=0, row=12, columnspan=5)
 
     window.mainloop()
