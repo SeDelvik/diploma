@@ -1,4 +1,3 @@
-import json
 import math
 import random
 import copy
@@ -267,10 +266,10 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
                 # выбор родителей
                 parents = self.new_selection(i, j)
                 # скрещивание
-                if self.operators[0] == 0:
+                if self.operators[1] == 0:
                     children = parents[0].one_point_crossingover(parents[1],
                                                                  random.randint(0, len(parents[1].chromosome) - 1))
-                elif self.operators[0] == 1:
+                elif self.operators[1] == 1:
                     children = parents[0].two_point_crossingover(parents[1],
                                                                  random.randint(0, len(parents[1].chromosome) - 1),
                                                                  random.randint(0, len(parents[1].chromosome) - 1))
@@ -278,10 +277,10 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
                     children = parents[0].binary_mask_crossingover(parents[1], random.choice(self.population))
 
                 # мутация
-                if self.operators[1] == 0:
+                if self.operators[2] == 0:
                     children[0].common_binary_mutation(self.probability)
                     children[1].common_binary_mutation(self.probability)
-                elif self.operators[1] == 1:
+                elif self.operators[2] == 1:
                     children[0].inversion_mutation(random.randint(0, len(self.population) - 1),
                                                    random.randint(0, len(self.population) - 1))
                     children[1].inversion_mutation(random.randint(0, len(self.population) - 1),
