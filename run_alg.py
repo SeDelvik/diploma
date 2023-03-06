@@ -11,21 +11,33 @@ def run_alg(variables: dict):
     :param variables: Словарь. Содержит в себе название алгоритма, массив с параметрами,
     :return:
     """
+    # в сбор данных должны входить:
+    # алгоритм и использованные параметры
+    # лучшая приспособленность
+    # кол-во поколений (для островов учитываются только сколько раз острова обменивались)
+    # время выполнения (желательно но не обязательно.)
+    gen_alg = get_alg_obj(variables)
+    k = 0
+    best_fit = gen_alg.bestChromosome.fit
+    while True:
+        if k > count_before_end:  # дописать внятный сборщик данных
+            return
+        gen_alg.one_cycle()
+        if gen_alg.bestChromosome.fit > best_fit:
+            k = 0
+            best_fit = gen_alg.bestChromosome.fit
+        else:
+            k += 1
+
+
+def get_alg_obj(variables: dict):
+    gen_alg = None
     if variables["methode"] == "SimpleGenVal":
-        start_simple_alg()
+        gen_alg = SimpleGeneticAlgorithm(variables["src"], variables["operators"], variables["population_count"],
+                                         variables["probability"])
     elif variables["methode"] == "CellGenAlg":
-        start_cell_alg()
+        gen_alg = CellGeneticAlgorithm(variables["population_count"], variables["src"], variables["operators"])
     elif variables["methode"] == "IslandGenAlg":
-        start_island_alg()
-
-
-def start_simple_alg():
-    pass
-
-
-def start_cell_alg():
-    pass
-
-
-def start_island_alg():
-    pass
+        gen_alg = IslandGeneticAlgorithm(variables["src"], variables["island_count"], variables["population_count"],
+                                         variables["count_generations"], variables["count_person_in_swap"])
+    return gen_alg
