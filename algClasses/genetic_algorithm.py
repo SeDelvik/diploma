@@ -316,6 +316,18 @@ class IslandGeneticAlgorithm:
         self.count_person_in_swap = count_person_in_swap
         self.islands = []
         self.create_islands(count_island, one_island_population_count, src_doc)
+        self.best_Chromosome = None
+        self.find_best_person()
+
+    def find_best_person(self):
+        maybe_best = self.islands[0].population[0]
+        for island in self.islands:
+            tmp_arr = island.population[:]
+            tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+            if tmp_arr[0].fit > maybe_best.fit:
+                maybe_best = tmp_arr[0]
+        self.best_Chromosome = copy.deepcopy(maybe_best)
+
 
     def create_islands(self, count_islands: int, one_islands_population_count: int, src_doc: str):
         """
@@ -340,13 +352,17 @@ class IslandGeneticAlgorithm:
             for island in self.islands:
                 island.one_cycle()
         arr_bests = []  # создание массива в котором будут храниться временные лучшие особи для обмена
+
         for island in self.islands:
             island.population.sort(key=lambda chromosome: chromosome.fit, reverse=True)  # сортирует все популяции островов по приспособленности.
             best_people = []
             for i in range(self.count_person_in_swap):
                 best_people.append(island.population.pop(0))  # вынимает лучших из другой популяции
             arr_bests.append(best_people)  # и сохраняет во временный массив
+
         for i in range(len(self.islands)):  # обменивает популяции со следующим
             if i == len(self.islands)-1:
                 self.islands[i].population = self.islands[i].population + arr_bests[0]
-            self.islands[i].population = self.islands[i].population + arr_bests[i+1]
+            else:
+                self.islands[i].population = self.islands[i].population + arr_bests[i+1]
+        self.find_best_person()
