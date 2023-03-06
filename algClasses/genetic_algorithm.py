@@ -41,7 +41,7 @@ class SimpleGeneticAlgorithm:
 
     def find_best_person(self):
         """
-        Ищет лучшую особь в популяции и записывает в параметры экземпляра
+        Ищет лучшую особь в популяции и записывает в параметры экземпляра.
         :return:
         """
         tmp_arr = self.population[:]
@@ -54,15 +54,16 @@ class SimpleGeneticAlgorithm:
 
     def panmixia(self) -> list[Chromosome]:
         """
-        Возвращает 2 случайные хромосомы
-        :return: массив из двух случайных хромосом
+        Возвращает 2 случайные хромосомы.
+        :return: Массив из двух случайных хромосом.
         """
         return random.choices(self.population, k=2)
 
     def outbreeding(self) -> list[Chromosome]:
         """
-        Аутбридинг. Выбирает первую хромосому случайно, вторую подбирает из популяции по наибольшему Хемминговому расстоянию
-        :return: массив из двух хромосом
+        Аутбридинг. Выбирает первую хромосому случайно, вторую подбирает из популяции по наибольшему
+        Хемминговому расстоянию.
+        :return: Массив из двух хромосом.
         """
         hamming_array = []
         best_hamming = 0
@@ -331,12 +332,22 @@ class IslandGeneticAlgorithm:
                                                      random.randint(0, 3)])
             self.islands.append(simple_gen_alg)
 
-    # from concurrent.futures import ProcessPoolExecutor
-    # https://habr.com/ru/company/wunderfund/blog/581994/
-    #
     def one_cycle(self):
         """
         Производит один цикл островного генетического алгоритма.
         :return:
         """
-        pass
+        for i in range(self.count_generation):  # прокручивает циклы смены поколений на всех островах
+            for island in self.islands:
+                island.one_cycle()
+        arr_bests = []  # создание массива в котором будут храниться временные лучшие особи для обмена
+        for island in self.islands:
+            island.population.sort(key=lambda chromosome: chromosome.fit, reverse=True)  # сортирует все популяции островов по приспособленности.
+            best_people = []
+            for i in range(self.count_person_in_swap):
+                best_people.append(island.population.pop(0))  # вынимает лучших из другой популяции
+            arr_bests.append(best_people)  # и сохраняет во временный массив
+        for i in range(len(self.islands)):  # обменивает популяции со следующим
+            if i == len(self.islands)-1:
+                self.islands[i].population = self.islands[i].population + arr_bests[0]
+            self.islands[i].population = self.islands[i].population + arr_bests[i+1]
