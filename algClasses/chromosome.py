@@ -57,8 +57,8 @@ class Chromosome:
         for i in range(len(self.chromosome)):
             if self.chromosome[i] == 0:
                 continue
-            if last_time + self.task_list[i].time <= self.task_list[
-                i].deadline:  # укладывается ли выбранная задача в расписание
+            # укладывается ли выбранная задача в расписание
+            if last_time + self.task_list[i].time <= self.task_list[i].deadline:
                 last_time += self.task_list[i].time
                 final_cost += self.task_list[i].cost
             else:
@@ -191,6 +191,6 @@ class Chromosome:
         """
         arr = [start_first, end_first, start_second, end_second]  # сортировка во избежание наложения
         arr.sort()
-        self.chromosome = self.chromosome[:arr[0]] + self.chromosome[arr[0]:arr[1]] + self.chromosome[arr[1]:arr[2]] + \
-                          self.chromosome[arr[2]:arr[3]] + self.chromosome[arr[3]:]
+        self.chromosome = self.chromosome[:arr[0]] + self.chromosome[arr[2]:arr[3]] + self.chromosome[arr[1]:arr[2]] + \
+                          self.chromosome[arr[0]:arr[1]] + self.chromosome[arr[3]:]
         self.count_self_fit()

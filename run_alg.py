@@ -21,7 +21,7 @@ def run_alg(variables: dict):
     best_fit = gen_alg.bestChromosome.fit
     while True:
         if k > count_before_end:  # дописать внятный сборщик данных
-            return
+            break
         gen_alg.one_cycle()
         if gen_alg.bestChromosome.fit > best_fit:
             k = 0
