@@ -27,6 +27,7 @@ def run_alg(variables: dict):
         if k > count_before_end:  # дописать внятный сборщик данных
             break
         gen_alg.one_cycle()
+        all_best_fits.append(gen_alg.bestChromosome.fit)
         print(f"fit:{gen_alg.bestChromosome.fit}")
         if gen_alg.bestChromosome.fit > best_fit:
             k = 0
@@ -49,7 +50,7 @@ def get_alg_obj(variables: dict):
         gen_alg = CellGeneticAlgorithm(population_count=variables["population_count"], src=variables["src"],
                                        operator=variables["operators"])
     elif variables["methode"] == "IslandGenAlg":
-        gen_alg = IslandGeneticAlgorithm(src=variables["src"], count_island=variables["island_count"],
+        gen_alg = IslandGeneticAlgorithm(src_doc=variables["src"], count_island=variables["island_count"],
                                          one_island_population_count=variables["population_count"],
                                          count_generation=variables["count_generations"],
                                          count_person_in_swap=variables["count_person_in_swap"])
