@@ -36,6 +36,7 @@ def run_alg(variables: dict):
             k += 1
     data["execution_time"] = str(datetime.now() - start_time)
     data["fits_in_all_time"] = all_best_fits
+    data["best_chromosome"] = gen_alg.bestChromosome.chromosome
     create_output_data(data)
 
 
