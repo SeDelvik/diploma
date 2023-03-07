@@ -38,11 +38,12 @@ def run_alg(variables: dict):
     data["fits_in_all_time"] = all_best_fits
     data["best_chromosome"] = gen_alg.bestChromosome.chromosome
     create_output_data(data)
+    print("finish")
 
 
 def get_alg_obj(variables: dict):
     gen_alg = None
-    if variables["methode"] == "SimpleGenVal":
+    if variables["methode"] == "SimpleGenAlg":
         tmp = SimpleGeneticAlgorithm(src=variables["src"], operator=variables["operators"],
                                      population_count=variables["population_count"],
                                      probability=variables["probability"])
@@ -65,5 +66,5 @@ def get_alg_obj(variables: dict):
 
 
 def create_output_data(data: dict):
-    with open(f'./output/{datetime.now().strftime("%d-%m-%Y_%S-%M-%H")}.json', 'w+') as fp:
+    with open(f'./output/{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.json', 'w+') as fp:
         json.dump(data, fp)

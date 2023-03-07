@@ -71,7 +71,7 @@ def start_gui():
     # алгоритмы
     lbl_algs = Label(window, text="Алгоритм:")
     lbl_algs.grid(column=0, row=2)
-    simple = "SimpleGenVal"
+    simple = "SimpleGenAlg"
     cell = "CellGenAlg"
     island = "IslandGenAlg"
 
