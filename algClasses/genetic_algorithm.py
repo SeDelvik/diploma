@@ -316,7 +316,7 @@ class IslandGeneticAlgorithm:
         self.count_person_in_swap = count_person_in_swap
         self.islands = []
         self.create_islands(count_island, one_island_population_count, src_doc)
-        self.best_Chromosome = None
+        self.bestChromosome = None
         self.find_best_person()
 
     def find_best_person(self):
@@ -326,7 +326,7 @@ class IslandGeneticAlgorithm:
             tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=True)
             if tmp_arr[0].fit > maybe_best.fit:
                 maybe_best = tmp_arr[0]
-        self.best_Chromosome = copy.deepcopy(maybe_best)
+        self.bestChromosome = copy.deepcopy(maybe_best)
 
 
     def create_islands(self, count_islands: int, one_islands_population_count: int, src_doc: str):
