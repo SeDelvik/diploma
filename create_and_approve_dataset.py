@@ -56,4 +56,4 @@ def get_potential_max_cost(file_name: str) -> int:
 
 if __name__ == '__main__':
     # create_dataset("testTask2", 10, 100, 5)
-    print(get_potential_max_cost("./res/testTaskList.json"))
+    print(get_potential_max_cost("./res/testTask.json"))
