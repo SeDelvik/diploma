@@ -1,5 +1,6 @@
 import copy
 import json
+import os
 from datetime import datetime
 import time
 
@@ -66,5 +67,7 @@ def get_alg_obj(variables: dict):
 
 
 def create_output_data(data: dict):
+    if not os.path.exists('./output'):
+        os.mkdir('./output')
     with open(f'./output/{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.json', 'w+') as fp:
         json.dump(data, fp)
