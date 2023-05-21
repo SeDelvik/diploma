@@ -45,7 +45,13 @@ class SimpleGeneticAlgorithm:
         """
         tmp_arr = self.population[:]
         tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=True)
-        self.bestChromosome = copy.deepcopy(tmp_arr[0])
+        if self.bestChromosome is None:
+            self.bestChromosome = copy.deepcopy(tmp_arr[0])
+            return
+        if self.bestChromosome.fit < tmp_arr[0].fit:
+            self.bestChromosome = copy.deepcopy(tmp_arr[0])
+            return
+
 
     # ----------------
     # Операторы выбора родителей
@@ -114,7 +120,7 @@ class SimpleGeneticAlgorithm:
         """
         tmp_population = self.population + new_population
         tmp_population.sort(key=lambda chromosome: chromosome.fit, reverse=True)
-        tmp_population = tmp_population[:max_count_population - 1]
+        tmp_population = tmp_population[:max_count_population]
         self.population = tmp_population
 
     def elite_selection(self, new_population: list[Chromosome], max_count_population: int):
@@ -178,19 +184,19 @@ class SimpleGeneticAlgorithm:
             new_population.append(children[0])
             new_population.append(children[1])
 
-            # отбор в новое поколение
-            if self.operators[3] == 0:
-                self.substitution(new_population)
-            elif self.operators[3] == 1:
-                self.truncation(new_population, len(self.population))
-            else:
-                self.elite_selection(new_population, len(self.population))
-            self.find_best_person()
+        # отбор в новое поколение
+        if self.operators[3] == 0:
+            self.substitution(new_population)
+        elif self.operators[3] == 1:
+            self.truncation(new_population, len(self.population))
+        else:
+            self.elite_selection(new_population, len(self.population))
+        self.find_best_person()
 
 
 class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
     def __init__(self, population_count, src, operator):  # population_count должен быть квадратом числа
-        super().__init__(population_count, src, operator)  # здесь нужно всего 2 оператора
+        super().__init__(round(math.sqrt(population_count))**2, src, operator)  # здесь нужно всего 2 оператора
         self.cells_population = []
         self.create_cells_population()
 
@@ -326,7 +332,12 @@ class IslandGeneticAlgorithm:
             tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=True)
             if tmp_arr[0].fit > maybe_best.fit:
                 maybe_best = tmp_arr[0]
-        self.bestChromosome = copy.deepcopy(maybe_best)
+        if self.bestChromosome is None:
+            self.bestChromosome = copy.deepcopy(tmp_arr[0])
+            return
+        if self.bestChromosome.fit < tmp_arr[0].fit:
+            self.bestChromosome = copy.deepcopy(tmp_arr[0])
+            return
 
 
     def create_islands(self, count_islands: int, one_islands_population_count: int, src_doc: str):
@@ -357,7 +368,11 @@ class IslandGeneticAlgorithm:
             island.population.sort(key=lambda chromosome: chromosome.fit, reverse=True)  # сортирует все популяции островов по приспособленности.
             best_people = []
             for i in range(self.count_person_in_swap):
-                best_people.append(island.population.pop(0))  # вынимает лучших из другой популяции
+                try:
+                    best_people.append(island.population.pop(0))  # вынимает лучших из другой популяции
+                except:
+                    print(f'операторы {island.operators}')
+                    exit(-1)
             arr_bests.append(best_people)  # и сохраняет во временный массив
 
         for i in range(len(self.islands)):  # обменивает популяции со следующим

@@ -23,6 +23,9 @@ class Chromosome:
         :param path: Путь до .json файла
         :return:
         """
+        print(f'количество тасков в массиве {len(Chromosome.task_list)}')
+        if len(Chromosome.task_list) != 0:
+            return
         with open(path, 'r') as fp:
             tmp_task_data = json.load(fp)
             for task1 in tmp_task_data:

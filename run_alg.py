@@ -29,7 +29,10 @@ def run_alg(variables: dict):
             break
         gen_alg.one_cycle()
         all_best_fits.append(gen_alg.bestChromosome.fit)
-        print(f"fit:{gen_alg.bestChromosome.fit}")
+        if type(gen_alg) == type(IslandGeneticAlgorithm):
+            print(f"поколение: {k} fit:{gen_alg.bestChromosome.fit}")
+        else:
+            print(f"поколение: {k} популяция: {len(gen_alg.population)} fit:{gen_alg.bestChromosome.fit}")
         if gen_alg.bestChromosome.fit > best_fit:
             k = 0
             best_fit = gen_alg.bestChromosome.fit
@@ -38,6 +41,7 @@ def run_alg(variables: dict):
     data["execution_time"] = str(datetime.now() - start_time)
     data["fits_in_all_time"] = all_best_fits
     data["best_chromosome"] = gen_alg.bestChromosome.chromosome
+    data["best_fit_ever"] = gen_alg.bestChromosome.fit
     create_output_data(data)
     print("finish")
 
