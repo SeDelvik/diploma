@@ -71,6 +71,7 @@ def get_alg_obj(variables: dict):
 
 
 def create_output_data(data: dict):
+    # todo реализовать созранение отсортированного списка задач по дедлайну (сейчас выведенная хромосома не соответствует изначальному списку задач)
     if not os.path.exists('./output'):
         os.mkdir('./output')
     with open(f'./output/{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.json', 'w+') as fp:

@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 
 
+# todo дописать в сборку файла поле "best population"
 def create_csv():
     data_list = []
     path_list = Path("../output").glob('*.json')

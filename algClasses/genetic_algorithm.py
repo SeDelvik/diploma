@@ -368,11 +368,7 @@ class IslandGeneticAlgorithm:
             island.population.sort(key=lambda chromosome: chromosome.fit, reverse=True)  # сортирует все популяции островов по приспособленности.
             best_people = []
             for i in range(self.count_person_in_swap):
-                try:
-                    best_people.append(island.population.pop(0))  # вынимает лучших из другой популяции
-                except:
-                    print(f'операторы {island.operators}')
-                    exit(-1)
+                best_people.append(island.population.pop(0))  # вынимает лучших из другой популяции
             arr_bests.append(best_people)  # и сохраняет во временный массив
 
         for i in range(len(self.islands)):  # обменивает популяции со следующим
