@@ -1,9 +1,9 @@
+import os
 from datetime import datetime
 from pathlib import Path
 import json
 
 
-# todo дописать в сборку файла поле "best population"
 def create_csv():
     data_list = []
     path_list = Path("../output").glob('*.json')
@@ -11,7 +11,9 @@ def create_csv():
         with open(path, 'r') as jp:
             data_list.append(json.load(jp))
 
-    with open(f'./output/{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.csv', 'w+') as file:
+    if not os.path.exists('./csv'):
+        os.mkdir('./csv')
+    with open(f'./csv/{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.csv', 'w+') as file:
         file.write("Метод,Выбор родителей,Скрещивание,Мутация,Создание новой популяции," +
                    "Вероятность мутации (только бинарная мутация),Кол-во особей в популяции/на одном острове,"
                    "Количество островов (только островной алг),Количество особей участвующих в обмене (только островной алг),"

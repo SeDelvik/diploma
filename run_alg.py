@@ -7,6 +7,7 @@ import time
 from algClasses.genetic_algorithm import SimpleGeneticAlgorithm
 from algClasses.genetic_algorithm import CellGeneticAlgorithm
 from algClasses.genetic_algorithm import IslandGeneticAlgorithm
+from algClasses.chromosome import Chromosome
 
 count_before_end = 1000  # количество поколений с одинаковой лучшей хромосомой
 
@@ -29,7 +30,7 @@ def run_alg(variables: dict):
             break
         gen_alg.one_cycle()
         all_best_fits.append(gen_alg.bestChromosome.fit)
-        if type(gen_alg) == type(IslandGeneticAlgorithm):
+        if isinstance(gen_alg, IslandGeneticAlgorithm):
             print(f"поколение: {k} fit:{gen_alg.bestChromosome.fit}")
         else:
             print(f"поколение: {k} популяция: {len(gen_alg.population)} fit:{gen_alg.bestChromosome.fit}")
@@ -42,8 +43,11 @@ def run_alg(variables: dict):
     data["fits_in_all_time"] = all_best_fits
     data["best_chromosome"] = gen_alg.bestChromosome.chromosome
     data["best_fit_ever"] = gen_alg.bestChromosome.fit
+    data["sorted_task_list"] = Chromosome.get_list_tasks_json()
     create_output_data(data)
     print("finish")
+    Chromosome.task_list.clear()  #очистка списка задач после выполнения после выполнения
+
 
 
 def get_alg_obj(variables: dict):
@@ -71,7 +75,6 @@ def get_alg_obj(variables: dict):
 
 
 def create_output_data(data: dict):
-    # todo реализовать созранение отсортированного списка задач по дедлайну (сейчас выведенная хромосома не соответствует изначальному списку задач)
     if not os.path.exists('./output'):
         os.mkdir('./output')
     with open(f'./output/{datetime.now().strftime("%d-%m-%Y_%H-%M-%S")}.json', 'w+') as fp:

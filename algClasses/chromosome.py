@@ -197,3 +197,10 @@ class Chromosome:
         self.chromosome = self.chromosome[:arr[0]] + self.chromosome[arr[2]:arr[3]] + self.chromosome[arr[1]:arr[2]] + \
                           self.chromosome[arr[0]:arr[1]] + self.chromosome[arr[3]:]
         self.count_self_fit()
+
+    @staticmethod
+    def get_list_tasks_json() -> list[dict]:
+        arr = []
+        for task in Chromosome.task_list:
+            arr.append(task.to_JSON())
+        return arr
