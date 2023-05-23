@@ -12,6 +12,17 @@ from algClasses.chromosome import Chromosome
 count_before_end = 1000  # количество поколений с одинаковой лучшей хромосомой
 
 
+def normal_result(best_chromosome):
+    sorted_list = Chromosome.task_list
+    normal_list = []
+    for i in range(len(best_chromosome)):
+        for j in range(len(best_chromosome)):
+            if sorted_list[j].name == i + 1:
+                normal_list.append(best_chromosome[j])
+                break
+    return normal_list
+
+
 def run_alg(variables: dict):
     """
     Прогоняет алгоритм с выбранными параметрами.
@@ -41,9 +52,8 @@ def run_alg(variables: dict):
             k += 1
     data["execution_time"] = str(datetime.now() - start_time)
     data["fits_in_all_time"] = all_best_fits
-    data["best_chromosome"] = gen_alg.bestChromosome.chromosome
+    data["best_chromosome"] = normal_result(gen_alg.bestChromosome.chromosome)
     data["best_fit_ever"] = gen_alg.bestChromosome.fit
-    data["sorted_task_list"] = Chromosome.get_list_tasks_json()
     create_output_data(data)
     print("finish")
     Chromosome.task_list.clear()  #очистка списка задач после выполнения после выполнения

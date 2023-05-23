@@ -44,11 +44,11 @@ class SimpleGeneticAlgorithm:
         :return:
         """
         tmp_arr = self.population[:]
-        tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+        tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=False)
         if self.bestChromosome is None:
             self.bestChromosome = copy.deepcopy(tmp_arr[0])
             return
-        if self.bestChromosome.fit < tmp_arr[0].fit:
+        if self.bestChromosome.fit > tmp_arr[0].fit:
             self.bestChromosome = copy.deepcopy(tmp_arr[0])
             return
 
@@ -85,7 +85,7 @@ class SimpleGeneticAlgorithm:
 
     def selection(self) -> list[Chromosome]:
         """
-        Селекция. Возвращает две хромосомы у которых приспособленность не меньше чем средняя
+        Селекция. Возвращает две хромосомы у которых приспособленность не больше чем средняя
         :return: массив из двух хромосом
         """
         avg_fit = 0
@@ -95,7 +95,7 @@ class SimpleGeneticAlgorithm:
 
         tmp_population = self.population[:]
         for chromosome in self.population:
-            if chromosome.fit < avg_fit:
+            if chromosome.fit > avg_fit:
                 tmp_population.remove(chromosome)
         return random.choices(tmp_population, k=2)
 
@@ -119,7 +119,7 @@ class SimpleGeneticAlgorithm:
         :return:
         """
         tmp_population = self.population + new_population
-        tmp_population.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+        tmp_population.sort(key=lambda chromosome: chromosome.fit, reverse=False)
         tmp_population = tmp_population[:max_count_population]
         self.population = tmp_population
 
@@ -131,7 +131,7 @@ class SimpleGeneticAlgorithm:
         :return:
         """
         tmp_population = self.population + new_population
-        tmp_population.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+        tmp_population.sort(key=lambda chromosome: chromosome.fit, reverse=False)
         tmp_population = tmp_population[:round(max_count_population * 0.1)]
         for i in range(max_count_population - len(tmp_population)):
             tmp_population.append(Chromosome())
@@ -256,7 +256,7 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
         """
         parent1 = self.cells_population[row][col]
         parents_array = self.get_partner_for_cell(row, col)
-        parents_array.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+        parents_array.sort(key=lambda chromosome: chromosome.fit, reverse=False)
         parent2 = parents_array[0]
         return [parent1, parent2]
 
@@ -329,13 +329,13 @@ class IslandGeneticAlgorithm:
         maybe_best = self.islands[0].population[0]
         for island in self.islands:
             tmp_arr = island.population[:]
-            tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+            tmp_arr.sort(key=lambda chromosome: chromosome.fit, reverse=False)
             if tmp_arr[0].fit > maybe_best.fit:
                 maybe_best = tmp_arr[0]
         if self.bestChromosome is None:
             self.bestChromosome = copy.deepcopy(tmp_arr[0])
             return
-        if self.bestChromosome.fit < tmp_arr[0].fit:
+        if self.bestChromosome.fit > tmp_arr[0].fit:
             self.bestChromosome = copy.deepcopy(tmp_arr[0])
             return
 
@@ -365,7 +365,7 @@ class IslandGeneticAlgorithm:
         arr_bests = []  # создание массива в котором будут храниться временные лучшие особи для обмена
 
         for island in self.islands:
-            island.population.sort(key=lambda chromosome: chromosome.fit, reverse=True)  # сортирует все популяции островов по приспособленности.
+            island.population.sort(key=lambda chromosome: chromosome.fit, reverse=False)  # сортирует все популяции островов по приспособленности.
             best_people = []
             for i in range(self.count_person_in_swap):
                 best_people.append(island.population.pop(0))  # вынимает лучших из другой популяции

@@ -1,60 +1,60 @@
 [
   {
-    "name": "one",
+    "name": 1,
     "time": 7,
     "deadline": 5,
     "cost": 10
   },
   {
-    "name": "two",
+    "name": 2,
     "time": 5,
     "deadline": 8,
     "cost": 9
   },
   {
-    "name": "three",
+    "name": 3,
     "time": 1,
     "deadline": 2,
     "cost": 4
   },
   {
-    "name": "four",
+    "name": 4,
     "time": 10,
     "deadline": 2,
     "cost": 6
   },
   {
-    "name": "five",
+    "name": 5,
     "time": 6,
     "deadline": 6,
     "cost": 10
   },
   {
-    "name": "six",
+    "name": 6,
     "time": 6,
     "deadline": 3,
     "cost": 10
   },
   {
-    "name": "seven",
+    "name": 7,
     "time": 8,
     "deadline": 8,
     "cost": 10
   },
   {
-    "name": "eight",
+    "name": 8,
     "time": 2,
     "deadline": 1,
     "cost": 10
   },
   {
-    "name": "nine",
+    "name": 9,
     "time": 2,
     "deadline": 2,
     "cost": 5
   },
   {
-    "name": "ten",
+    "name": 10,
     "time": 3,
     "deadline": 3,
     "cost": 10

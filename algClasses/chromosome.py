@@ -2,16 +2,27 @@ from __future__ import annotations
 
 import json
 import random
+import sys
+
 import algClasses.task as task
+
+
+def max_count():
+    cost = 0
+    for chrom in Chromosome.task_list:
+        cost += chrom.cost
+    return cost
 
 
 class Chromosome:
     task_list = []  # Массив, хранящий объекты-задачи. Нужен для расчета приспособленности хромосомы.
+    max_cost = sys.maxsize
 
     def __init__(self):
         self.chromosome = self.create_random_chromosome(len(self.task_list))
         self.fit = 0
         self.count_self_fit()
+
 
     def __str__(self):
         return f"fit: {self.fit}, chromosome: {self.chromosome}"
@@ -38,6 +49,7 @@ class Chromosome:
                                          "task")
                 Chromosome.task_list.append(tmp_task)
         Chromosome.task_list.sort(key=lambda tsk: tsk.deadline)
+        Chromosome.max_cost = max_count()
 
     def create_random_chromosome(self, length: int) -> list[int]:
         """
@@ -59,13 +71,12 @@ class Chromosome:
         final_cost = 0
         for i in range(len(self.chromosome)):
             if self.chromosome[i] == 0:
-                continue
-            # укладывается ли выбранная задача в расписание
-            if last_time + self.task_list[i].time <= self.task_list[i].deadline:
-                last_time += self.task_list[i].time
                 final_cost += self.task_list[i].cost
+            # укладывается ли выбранная задача в расписание
+            elif last_time + self.task_list[i].time <= self.task_list[i].deadline:
+                last_time += self.task_list[i].time
             else:
-                final_cost = 0
+                final_cost = Chromosome.max_cost
                 break
         self.fit = final_cost
 
