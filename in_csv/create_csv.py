@@ -17,10 +17,10 @@ def create_csv():
         file.write("Метод,Выбор родителей,Скрещивание,Мутация,Создание новой популяции," +
                    "Вероятность мутации (только бинарная мутация),Кол-во особей в популяции/на одном острове,"
                    "Количество островов (только островной алг),Количество особей участвующих в обмене (только островной алг),"
-                   "Время выполнения,Лучшая приспособленность\n")
+                   "Время выполнения,Лучшая приспособленность,Количество поколений\n")
         for data in data_list:
-            tmp_arr_fit = data["fits_in_all_time"][:]
-            tmp_arr_fit.sort()
+            # tmp_arr_fit = data["fits_in_all_time"][:]
+            # tmp_arr_fit.sort()
             translated_operators = translate_operators(data["operators"])
             tmp_string = ""
             if data["methode"] == "IslandGenAlg":  # островной
@@ -29,7 +29,9 @@ def create_csv():
                               str(data["island_count"]) + "," + \
                               str(data["count_person_in_swap"]) + "," + \
                               data["execution_time"] + "," + \
-                              str(tmp_arr_fit[len(tmp_arr_fit) - 1])
+                              str(data["fits_in_all_time"][-1]) + "," + \
+                              str(len(data["fits_in_all_time"]))
+                file.write(tmp_string + "\n")
                 continue
 
             if data["methode"] == "SimpleGenAlg":
@@ -42,7 +44,8 @@ def create_csv():
                 tmp_string += str(data["probability"])
             tmp_string += "," + str(data["population_count"]) + ",,," + \
                           str(data["execution_time"]) + "," + \
-                          str(tmp_arr_fit[len(tmp_arr_fit) - 1])
+                          str(data["fits_in_all_time"][-1])
+            tmp_string += "," + str(len(data["fits_in_all_time"]))
 
             file.write(tmp_string + "\n")
 

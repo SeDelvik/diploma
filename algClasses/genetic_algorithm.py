@@ -300,7 +300,7 @@ class CellGeneticAlgorithm(SimpleGeneticAlgorithm):
                                                        random.randint(0, len(self.population) - 1),
                                                        random.randint(0, len(self.population) - 1),
                                                        random.randint(0, len(self.population) - 1))
-                children.sort(key=lambda chromosome: chromosome.fit, reverse=True)
+                children.sort(key=lambda chromosome: chromosome.fit, reverse=False)
                 new_flat_population.append(children[0])
         self.population = new_flat_population
         self.find_best_person()

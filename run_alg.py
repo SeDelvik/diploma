@@ -45,7 +45,7 @@ def run_alg(variables: dict):
             print(f"поколение: {k} fit:{gen_alg.bestChromosome.fit}")
         else:
             print(f"поколение: {k} популяция: {len(gen_alg.population)} fit:{gen_alg.bestChromosome.fit}")
-        if gen_alg.bestChromosome.fit > best_fit:
+        if gen_alg.bestChromosome.fit < best_fit:
             k = 0
             best_fit = gen_alg.bestChromosome.fit
         else:
